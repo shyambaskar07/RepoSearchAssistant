@@ -1,37 +1,44 @@
-# ragapp/rag_engine.py
 import numpy as np
-from sentence_transformers import SentenceTransformer
 import faiss
 
-# load model once
-EMBED_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
-EMBED_DIM = EMBED_MODEL.get_sentence_embedding_dimension()  # usually 384
+# Lazy-loaded globals - initialized on first use (once per worker)
+EMBED_MODEL = None
+EMBED_DIM = None
+
+def _init_model():
+    """Initialize model on first use - called once per worker"""
+    global EMBED_MODEL, EMBED_DIM
+    if EMBED_MODEL is None:
+        from sentence_transformers import SentenceTransformer
+        EMBED_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+        EMBED_DIM = EMBED_MODEL.get_sentence_embedding_dimension()
 
 def embed_text(text):
-    # returns a normalized float32 vector (for cosine via inner product)
+    """Returns normalized float32 vector for cosine similarity"""
+    _init_model()
     vec = EMBED_MODEL.encode([text], convert_to_numpy=True)[0].astype("float32")
-    # normalize to unit length for cosine similarity via inner product
     norm = np.linalg.norm(vec)
     if norm > 0:
         vec = vec / norm
     return vec
 
 def vectors_from_db(uploaded_files):
-    # uploaded_files: queryset/list of UploadedFile objects
+    """Extract vectors from UploadedFile queryset/list"""
+    _init_model()
     vecs = []
     ids = []
-    for i, f in enumerate(uploaded_files):
+    for f in uploaded_files:
         if f.vector:
             arr = np.frombuffer(f.vector, dtype="float32")
             vecs.append(arr)
             ids.append(f.id)
     if vecs:
         return np.vstack(vecs).astype("float32"), ids
-    else:
-        return np.empty((0, EMBED_DIM), dtype="float32"), []
-    
+    return np.empty((0, EMBED_DIM), dtype="float32"), []
+
 def build_faiss_index(vectors):
-    # using IndexFlatIP on normalized vectors (inner product ~ cosine)
+    """Build FAISS index from normalized vectors"""
+    _init_model()
     if vectors.shape[0] == 0:
         return None
     index = faiss.IndexFlatIP(EMBED_DIM)
@@ -39,8 +46,8 @@ def build_faiss_index(vectors):
     return index
 
 def search_index(index, query_vec, top_k=5):
+    """Search FAISS index, returns (distances, indices)"""
     if index is None:
         return [], []
-    # query_vec should be normalized float32
     D, I = index.search(np.array([query_vec], dtype="float32"), top_k)
     return D[0].tolist(), I[0].tolist()
