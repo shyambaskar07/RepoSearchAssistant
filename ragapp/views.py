@@ -3,13 +3,12 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.core.cache import cache
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import UploadedFile
 from .utils import extract_text_from_file
-from .rag_engine import embed_text, vectors_from_db, build_faiss_index, search_index
 
 import numpy as np
-
 
 def upload_file_view(request):
     if request.method == "POST":
@@ -23,6 +22,8 @@ def upload_file_view(request):
         txt = extract_text_from_file(obj.file.path)
         obj.text = txt
 
+        # LAZY LOAD rag_engine only when needed
+        from .rag_engine import embed_text
         vec = embed_text(txt)
         obj.vector = vec.tobytes()
         obj.save()
@@ -31,10 +32,8 @@ def upload_file_view(request):
 
     return render(request, "ragapp/upload.html")
 
-
 def upload_success(request):
     return render(request, "ragapp/upload_success.html")
-
 
 def search_view(request):
     q = request.GET.get("q", "")
@@ -42,6 +41,12 @@ def search_view(request):
 
     if q.strip():
         files = list(UploadedFile.objects.all())
+        
+        # LAZY LOAD rag_engine functions only when search is called
+        from .rag_engine import (
+            vectors_from_db, build_faiss_index, embed_text, search_index
+        )
+        
         vectors, ids = vectors_from_db(files)
 
         if vectors.shape[0] > 0:
@@ -59,7 +64,7 @@ def search_view(request):
 
     return render(request, "ragapp/results.html", {"query": q, "results": results})
 
-
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 def github_similarity_search(request):
     """
@@ -67,9 +72,6 @@ def github_similarity_search(request):
     Input: query text
     Output: JSON with repositories: title, github_url, description, similarity, language, stars, reason.
     """
-    from github import Github
-    from sentence_transformers import SentenceTransformer, util
-
     query = request.POST.get("query") or request.GET.get("q", "")
     if not query.strip():
         return JsonResponse({"error": "Query required"}, status=400)
@@ -79,6 +81,10 @@ def github_similarity_search(request):
     cached = cache.get(cache_key)
     if cached is not None:
         return JsonResponse(cached)
+
+    # LAZY LOAD GitHub + sentence_transformers only when called
+    from github import Github
+    from sentence_transformers import SentenceTransformer, util
 
     # GitHub client (token optional but recommended)
     g = Github(getattr(settings, "GITHUB_TOKEN", "") or "")
