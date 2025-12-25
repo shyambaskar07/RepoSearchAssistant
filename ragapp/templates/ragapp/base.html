@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Repository Retrieval</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+  <div class="container">
+    <h1 class="mb-3">Repository Retrieval</h1>
+
+    <!-- GitHub repository search form -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <form method="post" action="{% url 'github_search' %}" class="d-flex gap-2">
+          {% csrf_token %}
+          <input type="text"
+                 name="query"
+                 class="form-control"
+                 placeholder="Search similar GitHub repos (e.g., django rag embeddings)"
+                 required>
+          <button type="submit" class="btn btn-primary">GitHub Search</button>
+        </form>
+      </div>
+    </div>
+
+    {% block content %}{% endblock %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
