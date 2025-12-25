@@ -86,14 +86,14 @@ nest-asyncio==1.6.0
 networkx==3.6.1
 nltk==3.9.2
 numpy==2.3.5
-opt_einsum==3.4.0
+opt-einsum==3.4.0
 optree==0.18.0
 orjson==3.11.3
 ormsgpack==1.11.0
 packaging==25.0
 pandas==2.3.3
 parso==0.8.4
-pillow==12.0.0
+pillow==11.1.0          # changed from 12.0.0 to satisfy streamlit<12
 platformdirs==4.3.8
 prompt_toolkit==3.0.51
 propcache==0.4.1
@@ -103,8 +103,8 @@ pure_eval==0.2.3
 pyarrow==21.0.0
 pycparser==2.23
 pydantic==2.12.3
+pydantic-core==2.41.4
 pydantic-settings==2.11.0
-pydantic_core==2.41.4
 pydeck==0.9.1
 PyGithub==2.8.1
 Pygments==2.19.2
@@ -142,9 +142,9 @@ tenacity==9.1.2
 tensorboard==2.20.0
 tensorboard-data-server==0.7.2
 tensorflow==2.20.0
-tensorflow_keras==0.1
+tensorflow-keras==0.1
 termcolor==3.2.0
-tf_keras==2.20.1
+tf-keras==2.20.1
 threadpoolctl==3.6.0
 tokenizers==0.22.1
 toml==0.10.2
@@ -167,3 +167,4 @@ xgboost==3.0.4
 xxhash==3.6.0
 yarl==1.22.0
 zstandard==0.25.0
+
