@@ -9,7 +9,7 @@ def _init_model():
     global EMBED_MODEL, EMBED_DIM
     if EMBED_MODEL is None:
         from sentence_transformers import SentenceTransformer
-        EMBED_MODEL = SentenceTransformer("paraphrase-albert-small-v2")
+        EMBED_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
         if EMBED_MODEL.device.type == 'cuda':
             EMBED_MODEL.half()
         EMBED_DIM = EMBED_MODEL.get_sentence_embedding_dimension()
