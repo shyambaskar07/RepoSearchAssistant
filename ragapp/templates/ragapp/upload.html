@@ -1,0 +1,13 @@
+{% extends 'ragapp/base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="card-title">Upload Knowledge Base</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3"><input type="file" name="file" class="form-control" required></div>
+            <button type="submit" class="btn btn-success">Upload and Index</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asynchronous Programming</title>
+    </head>
+    <body>
+        <script>
+            function random()
+                {return Math.floor(Math.random()*100)
+                }
+            let x=0
+            while(x!=5)
+                {x=random()
+                 await setInterval(()=>{document.write(x+'<br>')},5000)
+                }
+        </script>
+    </body>
+</html>

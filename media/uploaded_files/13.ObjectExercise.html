@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM API for HTML modification</title>
+</head>
+<body style="background-color:lightblue;text-align:center">
+    <h1 id="hdr1">Here's your ice cream</h1>
+    <img id="img1" src="full-cone.jpg" alt="Ice cream is not ready">
+    <p id="p1" onclick="eat()">Click here to eat</p>
+    <script>
+        obj1=
+        {heading:"Hope you liked it!",
+         source:"empty-cone.jpg",
+         para:"Click to Re-fill!",
+         color:"lightgreen"
+        }
+        obj2=
+        {heading:"Here's a refilled cone",
+         source:"full-cone.jpg",
+         para:"Enjoy yourself!",
+         color:"lightblue"
+        }
+        obj3=
+        {heading:"Here's your ice cream",
+         source:"full-cone.jpg",
+         para:"Click here to eat",
+         color:"lightblue"
+        }
+        arr=[obj1,obj2,obj3]
+        let count=0
+        function eat()
+            {count=count%3
+             document.getElementById('hdr1').innerText=arr[count].heading
+             document.getElementById('p1').innerText=arr[count].para
+             document.getElementById('img1').src=arr[count].source
+             document.body.style.backgroundColor=arr[count].color
+             count++
+            }
+        
+    </script>
+</body>
+</html>

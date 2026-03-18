@@ -1,0 +1,14 @@
+{% extends 'ragapp/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Check File Origin</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Upload file to compare:</label>
+            <input type="file" name="search_file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Find Source Repo</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "ragapp/base.html" %}
+{% block content %}
+<div class="alert alert-success">
+    <h4>Success!</h4>
+    <p>Your file has been uploaded and indexed successfully.</p>
+    <hr>
+    <a href="{% url 'search_by_file' %}" class="btn btn-primary">Go to File Origin Search</a>
+    <a href="{% url 'upload_file' %}" class="btn btn-outline-success">Upload Another File</a>
+</div>
+{% endblock %}

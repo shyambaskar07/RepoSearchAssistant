@@ -1,0 +1,25 @@
+{% extends 'ragapp/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Results for: {{ query }}</h2>
+    {% if results %}
+        <table class="table table-hover mt-3">
+            <thead class="table-dark">
+                <tr><th>Source Repository</th><th>Confidence</th><th>Matches</th></tr>
+            </thead>
+            <tbody>
+                {% for res in results %}
+                <tr>
+                    <td><strong>{{ res.source }}</strong></td>
+                    <td>{{ res.confidence }}</td>
+                    <td>{{ res.matches }} chunks</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning mt-3">No matching files found. Ensure you have uploaded reference files!</div>
+    {% endif %}
+    <div class="mt-4"><a href="/" class="btn btn-secondary">Back</a></div>
+</div>
+{% endblock %}
